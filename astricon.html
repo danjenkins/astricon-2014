@@ -1,0 +1,59 @@
+
+<html>
+
+    <head>
+        <title>loadtest cell loadcell</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+        <script src="https://cdn.respoke.io/respoke.min.js"></script>
+    </head>
+    <body>
+        <div id="caller">
+    <div id="status">loadcell</div>
+            <input id="connectButton" type="button" value="Connect" />
+            <input id="hangupButton" type="button" value="Hangup" />
+        </div>
+
+  <div id="remoteVideoContainer" class="ui-video-remote-container"></div>
+  <div id="localVideoContainer" class="ui-video-local-container"></div>
+        <script>
+            // here's the App ID value from the portal:
+            var call;
+            var appid = "71a6f0fc-7f56-4adc-bfc7-bda782d1289c";
+
+            // create a client object using the App ID value from Step 2
+            var client = new respoke.Client({
+                appId: appid,
+    developmentMode: true,
+    baseURL : "https://api.respoke.io"
+            });
+
+
+            function knowEnough() {
+                $("#connectButton").click(function() {
+        var endpoint = client.getEndpoint({"id": "loadtest"});
+                    call = endpoint.startAudioCall();
+                    call.listen('hangup', function() {
+                        call = null;
+                    });
+                });
+                $("#hangupButton").click(function() {
+                    if (call) {
+                        call.hangup();
+                        $("#localVideoContainer").empty();
+                        $("#remoteVideoContainer").empty();
+                        call = null;
+                    }
+                });
+            }
+
+            $(document).ready(function() {
+    knowEnough();
+    client.connect({endpointId: "loadcell"});
+            });
+
+
+        </script>
+    </body>
+</html>
